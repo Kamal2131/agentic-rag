@@ -7,15 +7,15 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
-from rag.models import Document, ChatHistory, ToolLog
-from rag.serializers.serializers import (
+from apps.rag.models import Document, ChatHistory, ToolLog
+from apps.rag.serializers.serializers import (
     DocumentSerializer, DocumentUploadSerializer, QuerySerializer,
     QueryResponseSerializer, ChatHistorySerializer, ToolLogSerializer,
     ToolMetadataSerializer
 )
-from rag.services.document_service import DocumentService
-from rag.agent.executor import AgentExecutor
-from rag.tools.registry import ToolRegistry
+from apps.rag.services.document_service import DocumentService
+from apps.rag.agent.executor import AgentExecutor
+from apps.rag.tools.registry import ToolRegistry
 
 
 class DocumentViewSet(viewsets.ViewSet):

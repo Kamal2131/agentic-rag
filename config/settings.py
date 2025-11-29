@@ -32,8 +32,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     
     # Local apps
-    'rag',
-    'chat',
+    'apps.rag',
+    'apps.chat',
 ]
 
 MIDDLEWARE = [

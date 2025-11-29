@@ -2,9 +2,9 @@
 Document Service for managing document operations.
 """
 
-from rag.models import Document
-from rag.services.embedding_service import EmbeddingService
-from rag.services.qdrant_service import QdrantService
+from apps.rag.models import Document
+from apps.rag.services.embedding_service import EmbeddingService
+from apps.rag.services.qdrant_service import QdrantService
 
 
 class DocumentService:

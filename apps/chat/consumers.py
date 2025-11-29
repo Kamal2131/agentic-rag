@@ -1,9 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from rag.agent.executor import AgentExecutor
-from rag.agent.llm_client import LLMClient
-from rag.tools.registry import ToolRegistry
-from rag.models import ChatHistory
+from apps.rag.agent.executor import AgentExecutor
+from apps.rag.models import ChatHistory
 from asgiref.sync import sync_to_async
 import uuid
 

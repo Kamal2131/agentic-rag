@@ -1,0 +1,88 @@
+import pytest
+from django.urls import reverse
+from rest_framework import status
+
+
+@pytest.mark.django_db
+class TestToolsAPI:
+    """Test tools listing API."""
+
+    def test_list_tools(self, api_client):
+        """Test listing available tools."""
+        url = reverse('tool-list')
+        response = api_client.get(url)
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert isinstance(data, list)
+        assert len(data) > 0
+        # Check tool structure
+        tool = data[0]
+        assert 'name' in tool
+        assert 'description' in tool
+
+
+@pytest.mark.django_db
+class TestDocumentUploadAPI:
+    """Test document upload API."""
+
+    def test_upload_document(self, api_client, monkeypatch):
+        """Test uploading a document."""
+        # Mock embedding service to avoid API calls
+        def mock_generate(*args, **kwargs):
+            return [0.1] * 1536
+        
+        from apps.rag.services import embedding_service
+        monkeypatch.setattr(embedding_service.EmbeddingService, 'generate_embedding', mock_generate)
+        
+        url = reverse('document-list')
+        data = {
+            'title': 'Test Document',
+            'content': 'This is test content for the document.',
+            'metadata': {'source': 'test'}
+        }
+        response = api_client.post(url, data, format='json')
+        assert response.status_code == status.HTTP_201_CREATED
+        assert 'id' in response.json()
+
+
+@pytest.mark.django_db
+class TestChatHistoryAPI:
+    """Test chat history API."""
+
+    def test_list_chat_history(self, api_client, create_chat_history):
+        """Test listing chat history."""
+        create_chat_history(user="user1")
+        create_chat_history(user="user2")
+        
+        url = reverse('chathistory-list')
+        response = api_client.get(url)
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert 'results' in data
+        assert len(data['results']) >= 2
+
+    def test_retrieve_chat_history(self, api_client, create_chat_history):
+        """Test retrieving specific chat history."""
+        chat = create_chat_history()
+        url = reverse('chathistory-detail', kwargs={'pk': chat.id})
+        response = api_client.get(url)
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data['id'] == chat.id
+
+
+@pytest.mark.django_db
+class TestToolLogsAPI:
+    """Test tool logs API."""
+
+    def test_list_tool_logs(self, api_client, create_tool_log):
+        """Test listing tool logs."""
+        create_tool_log(tool_name="search")
+        create_tool_log(tool_name="query")
+        
+        url = reverse('toollog-list')
+        response = api_client.get(url)
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert 'results' in data
+        assert len(data['results']) >= 2

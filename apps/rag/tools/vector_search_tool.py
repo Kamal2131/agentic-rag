@@ -2,7 +2,7 @@
 Vector Search Tool for the agent.
 """
 
-from rag.services.vector_search_service import VectorSearchService
+from apps.rag.services.vector_search_service import VectorSearchService
 
 
 def vector_search_tool(query, top_k=5, filters=None):

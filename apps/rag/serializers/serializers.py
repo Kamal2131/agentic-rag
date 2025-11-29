@@ -3,7 +3,7 @@ Serializers for RAG models and API requests/responses.
 """
 
 from rest_framework import serializers
-from rag.models import Document, ChatHistory, ToolLog
+from apps.rag.models import Document, ChatHistory, ToolLog
 
 
 class DocumentSerializer(serializers.ModelSerializer):

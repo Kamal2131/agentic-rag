@@ -2,7 +2,7 @@
 Keyword Search Tool for the agent.
 """
 
-from rag.models import Document
+from apps.rag.models import Document
 
 
 def keyword_search_tool(query, top_k=10):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from rag.models import Document, ChatHistory, ToolLog
+from apps.rag.models import Document, ChatHistory, ToolLog
 
 
 @admin.register(Document)

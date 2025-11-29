@@ -4,7 +4,7 @@ URL configuration for RAG app.
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rag.views import (
+from apps.rag.views import (
     DocumentViewSet, QueryViewSet, ChatHistoryViewSet,
     ToolsViewSet, ToolLogViewSet
 )

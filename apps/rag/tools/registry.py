@@ -2,7 +2,7 @@
 Tool Registry for managing and executing agent tools.
 """
 
-from rag.tools import vector_search_tool, keyword_search_tool, sql_query_tool, web_search_tool
+from apps.rag.tools import vector_search_tool, keyword_search_tool, sql_query_tool, web_search_tool
 
 
 class ToolRegistry:

@@ -3,10 +3,10 @@ Agent Executor implementing ReAct-style reasoning loop.
 """
 
 from django.conf import settings
-from rag.agent.llm_client import LLMClient
-from rag.agent.prompts import get_system_prompt
-from rag.tools.registry import ToolRegistry
-from rag.models import ToolLog
+from apps.rag.agent.llm_client import LLMClient
+from apps.rag.agent.prompts import get_system_prompt
+from apps.rag.tools.registry import ToolRegistry
+from apps.rag.models import ToolLog
 
 
 class AgentExecutor:
