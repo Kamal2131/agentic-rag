@@ -8,17 +8,17 @@ class TestToolRegistry:
     def test_registry_has_tools(self):
         """Test that registry contains tools."""
         registry = ToolRegistry()
-        tools = registry.get_all_tools()
+        tools = registry.list_tools()
         assert len(tools) > 0
         assert 'vector_search' in [t['name'] for t in tools]
 
-    def test_get_tool_metadata(self):
-        """Test getting tool metadata."""
+    def test_get_tool_info(self):
+        """Test getting tool info."""
         registry = ToolRegistry()
-        metadata = registry.get_tool_metadata('vector_search')
-        assert metadata is not None
-        assert 'name' in metadata
-        assert 'description' in metadata
+        info = registry.get_tool_info('vector_search')
+        assert info is not None
+        assert 'name' in info
+        assert 'description' in info
 
     def test_call_nonexistent_tool(self):
         """Test calling non-existent tool."""

@@ -8,6 +8,7 @@ def django_db_setup():
     settings.DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
+        'ATOMIC_REQUESTS': False,
     }
 
 

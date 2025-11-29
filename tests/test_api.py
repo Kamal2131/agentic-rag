@@ -9,8 +9,8 @@ class TestToolsAPI:
 
     def test_list_tools(self, api_client):
         """Test listing available tools."""
-        url = reverse('tool-list')
-        response = api_client.get(url)
+        # Use direct URL path instead of reverse
+        response = api_client.get('/api/rag/tools/')
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert isinstance(data, list)
@@ -28,19 +28,19 @@ class TestDocumentUploadAPI:
     def test_upload_document(self, api_client, monkeypatch):
         """Test uploading a document."""
         # Mock embedding service to avoid API calls
-        def mock_generate(*args, **kwargs):
+        def mock_generate(self, text):
             return [0.1] * 1536
         
         from apps.rag.services import embedding_service
         monkeypatch.setattr(embedding_service.EmbeddingService, 'generate_embedding', mock_generate)
         
-        url = reverse('document-list')
+        # Use direct URL path
         data = {
             'title': 'Test Document',
             'content': 'This is test content for the document.',
             'metadata': {'source': 'test'}
         }
-        response = api_client.post(url, data, format='json')
+        response = api_client.post('/api/rag/upload/', data, format='json')
         assert response.status_code == status.HTTP_201_CREATED
         assert 'id' in response.json()
 
@@ -54,8 +54,8 @@ class TestChatHistoryAPI:
         create_chat_history(user="user1")
         create_chat_history(user="user2")
         
-        url = reverse('chathistory-list')
-        response = api_client.get(url)
+        # Use direct URL path
+        response = api_client.get('/api/rag/history/')
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert 'results' in data
@@ -64,8 +64,8 @@ class TestChatHistoryAPI:
     def test_retrieve_chat_history(self, api_client, create_chat_history):
         """Test retrieving specific chat history."""
         chat = create_chat_history()
-        url = reverse('chathistory-detail', kwargs={'pk': chat.id})
-        response = api_client.get(url)
+        # Use direct URL path
+        response = api_client.get(f'/api/rag/history/{chat.id}/')
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data['id'] == chat.id
@@ -80,8 +80,8 @@ class TestToolLogsAPI:
         create_tool_log(tool_name="search")
         create_tool_log(tool_name="query")
         
-        url = reverse('toollog-list')
-        response = api_client.get(url)
+        # Use direct URL path
+        response = api_client.get('/api/rag/logs/')
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert 'results' in data
