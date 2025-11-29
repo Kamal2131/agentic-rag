@@ -32,3 +32,6 @@ Thumbs.db
 
 # Docker
 postgres_data/
+
+
+unused/
