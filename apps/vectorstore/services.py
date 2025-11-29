@@ -63,6 +63,33 @@ class QdrantService:
         except Exception as e:
             raise Exception(f"Failed to upsert vector: {str(e)}")
     
+    def upsert_batch(self, points):
+        """
+        Insert or update multiple document vectors.
+        
+        Args:
+            points: List of dictionaries with 'id', 'vector', and 'payload'
+            
+        Returns:
+            bool: Success status
+        """
+        try:
+            batch_points = [
+                PointStruct(
+                    id=str(p['id']),
+                    vector=p['vector'],
+                    payload=p.get('payload', {})
+                ) for p in points
+            ]
+            
+            self.client.upsert(
+                collection_name=self.COLLECTION_NAME,
+                points=batch_points
+            )
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to batch upsert vectors: {str(e)}")
+    
     def search_vectors(self, query_embedding, top_k=5, filters=None):
         """
         Search for similar vectors.
