@@ -19,14 +19,13 @@ class TestDocumentUploadAPI:
 
     def test_upload_document(self, api_client, monkeypatch):
         """Test uploading a document."""
-        # Mock embedding service - use instance method signature
+        # Mock embedding service - use correct method name
         from apps.rag.services.embedding_service import EmbeddingService
         
-        original_generate = EmbeddingService.generate_embedding
-        def mock_generate(self, text):
+        def mock_embed(self, text):
             return [0.1] * 1536
         
-        monkeypatch.setattr(EmbeddingService, 'generate_embedding', mock_generate)
+        monkeypatch.setattr(EmbeddingService, 'embed', mock_embed)
         
         # Correct URL: /api/rag/upload/
         data = {

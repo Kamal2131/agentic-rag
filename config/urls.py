@@ -11,7 +11,7 @@ urlpatterns = [
     path('ready/', readiness_check, name='readiness'),
     
     # API
-    path('api/', include('apps.rag.urls')),
+    path('api/rag/', include('apps.rag.urls')),
     
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
