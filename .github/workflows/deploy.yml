@@ -24,7 +24,7 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'production' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Log deployment
         run: |
