@@ -12,6 +12,7 @@ channels>=4.0.0
 daphne>=4.0.0
 channels-redis>=4.1.0
 requests>=2.31.0
+pypdf>=3.17.0
 
 # Testing
 pytest>=7.4.0

@@ -12,6 +12,7 @@ urlpatterns = [
     
     # API
     path('api/rag/', include('apps.rag.urls')),
+    path('api/knowledgebase/', include('apps.knowledgebase.urls')),
     
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
