@@ -22,7 +22,7 @@ def api_client():
 @pytest.fixture
 def create_document():
     """Factory fixture for creating Document instances."""
-    from apps.rag.models import Document
+    from apps.knowledgebase.models import Document
     
     def _create_document(title="Test Document", content="Test content"):
         return Document.objects.create(

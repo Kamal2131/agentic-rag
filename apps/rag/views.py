@@ -7,7 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
-from apps.rag.models import Document, ChatHistory, ToolLog
+from apps.knowledgebase.models import Document
+from apps.rag.models import ChatHistory, ToolLog
 from apps.rag.serializers.serializers import (
     DocumentSerializer, DocumentUploadSerializer, QuerySerializer,
     QueryResponseSerializer, ChatHistorySerializer, ToolLogSerializer,

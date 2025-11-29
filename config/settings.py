@@ -34,6 +34,9 @@ INSTALLED_APPS = [
     # Local apps
     'apps.rag',
     'apps.chat',
+    'apps.vectorstore',
+    'apps.knowledgebase',
+    'apps.core',
 ]
 
 MIDDLEWARE = [

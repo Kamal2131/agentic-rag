@@ -3,9 +3,8 @@ Document Service for managing document operations.
 """
 
 from apps.knowledgebase.models import Document
-from apps.rag.services.embedding_service import EmbeddingService
-from apps.rag.services.qdrant_service import QdrantService
-
+from apps.core.services import EmbeddingService
+from apps.vectorstore.services import QdrantService
 
 class DocumentService:
     """

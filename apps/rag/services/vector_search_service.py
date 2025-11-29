@@ -2,7 +2,7 @@
 Vector Search Service using Qdrant for similarity search.
 """
 
-from apps.rag.models import Document
+from apps.knowledgebase.models import Document
 from apps.rag.services.embedding_service import EmbeddingService
 from apps.rag.services.qdrant_service import QdrantService
 

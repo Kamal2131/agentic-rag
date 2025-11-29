@@ -1,5 +1,6 @@
 import pytest
-from apps.rag.models import Document, ChatHistory, ToolLog
+from apps.knowledgebase.models import Document
+from apps.rag.models import ChatHistory, ToolLog
 
 
 @pytest.mark.django_db
