@@ -83,7 +83,7 @@ jobs:
       # ============================================
       - name: Deploy to DigitalOcean
         if: false  # Enable when ready
-        uses: digitalocean/app_action@v1.1.5
+        uses: digitalocean/app_action@v2.0.10
         with:
           app_name: agentic-rag
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
