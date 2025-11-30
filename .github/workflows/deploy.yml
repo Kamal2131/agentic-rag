@@ -19,101 +19,38 @@ env:
 
 jobs:
   deploy:
-    name: Deploy to ${{ github.event.inputs.environment || 'production' }}
+    name: Deploy to AWS ECS
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'production' }}
+    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Log deployment
-        run: |
-          echo "Deploying version: ${{ github.ref_name || github.sha }}"
-          echo "Environment: ${{ github.event.inputs.environment || 'production' }}"
-          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name || 'latest' }}"
-
-      # ============================================
-      # Example: Deploy to Railway
-      # ============================================
-      - name: Deploy to Railway
-        if: false  # Enable when ready
-        run: |
-          curl -X POST https://backboard.railway.app/graphql/v2 \
-            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "query": "mutation { projectTokenServiceRedeploy(input: { projectId: \"${{ secrets.RAILWAY_PROJECT_ID }}\", serviceId: \"${{ secrets.RAILWAY_SERVICE_ID }}\" }) { success } }"
-            }'
-
-      # ============================================
-      # Example: Deploy to Fly.io
-      # ============================================
-      - name: Deploy to Fly.io
-        if: false  # Enable when ready
-        uses: superfly/flyctl-actions/setup-flyctl@master
-      
-      - name: Run Fly.io deployment
-        if: false  # Enable when ready
-        run: flyctl deploy --remote-only
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
-      # ============================================
-      # Example: Deploy to AWS ECS
-      # ============================================
       - name: Configure AWS credentials
-        if: false  # Enable when ready
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Deploy to Amazon ECS
-        if: false  # Enable when ready
         run: |
-          # Update ECS task definition with new image
-          aws ecs update-service \
-            --cluster ${{ secrets.ECS_CLUSTER }} \
-            --service ${{ secrets.ECS_SERVICE }} \
-            --force-new-deployment
-
-      # ============================================
-      # Example: Deploy to DigitalOcean App Platform
-      # ============================================
-      - name: Deploy to DigitalOcean
-        if: false  # Enable when ready
-        uses: digitalocean/app_action@v1.1.5
-        with:
-          app_name: agentic-rag
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-      # ============================================
-      # Deploy to EC2 via SSH
-      # ============================================
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /opt/agentic_rag
-            git pull origin main
-            docker-compose pull
-            docker-compose down
-            docker-compose up -d
-            sleep 10
-            docker-compose exec -T web python manage.py migrate
-            docker-compose exec -T web python manage.py collectstatic --noinput || true
-            
-            # Health check
-            if curl -f http://localhost:8000/api/rag/tools/; then
-              echo "✅ Deployment successful!"
-            else
-              echo "❌ Deployment failed"
-              exit 1
-            fi
-
-      - name: Deployment Complete
-        run: echo "✅ Deployment completed successfully!"
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER }} --service ${{ secrets.ECS_SERVICE }} --force-new-deployment
