@@ -20,9 +20,5 @@ class DocumentUploadSerializer(serializers.Serializer):
     Validates input before creating a Document instance.
     """
     title = serializers.CharField(max_length=500, required=True)
-<<<<<<< HEAD
-    content = serializers.CharField(required=False)
-=======
     content = serializers.CharField(required=False) # Optional if file is provided, but here we use it for direct text or file handling logic in view
->>>>>>> a4e19396f3973d0407a4d44e657a0bf4900779a3
     metadata = serializers.JSONField(required=False, default=dict)
