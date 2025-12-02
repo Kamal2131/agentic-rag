@@ -3,24 +3,26 @@ Router for RAG pipeline.
 """
 
 import json
+
 from apps.core.agent.llm_client import LLMClient
+
 
 class Router:
     """
     Router to decide which data source to use.
     """
-    
+
     def __init__(self):
         self.llm_client = LLMClient()
-    
+
     def route(self, query, summary=None):
         """
         Route the query to appropriate source.
-        
+
         Args:
             query (str): User query
             summary (str): Summary of local knowledge base (optional)
-            
+
         Returns:
             str: 'local', 'web', or 'both'
         """
@@ -34,16 +36,16 @@ class Router:
         
         Output JSON format: {"source": "local" | "web" | "both"}
         """
-        
+
         user_content = f"Query: {query}\n"
         if summary:
             user_content += f"Local Document Summary: {summary}\n"
-            
+
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_content}
+            {"role": "user", "content": user_content},
         ]
-        
+
         try:
             response = self.llm_client.chat(messages, json_mode=True)
             parsed = json.loads(response)

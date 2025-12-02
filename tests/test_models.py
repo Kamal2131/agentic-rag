@@ -1,4 +1,5 @@
 import pytest
+
 from apps.knowledgebase.models import Document
 from apps.rag.models import ChatHistory, ToolLog
 
@@ -10,9 +11,7 @@ class TestDocumentModel:
     def test_create_document(self):
         """Test creating a document."""
         doc = Document.objects.create(
-            title="Test Document",
-            content="This is test content",
-            metadata={"source": "test"}
+            title="Test Document", content="This is test content", metadata={"source": "test"}
         )
         assert doc.id is not None
         assert doc.title == "Test Document"
@@ -30,7 +29,7 @@ class TestDocumentModel:
         """Test keyword search functionality."""
         create_document(title="Python Programming", content="Learn Python basics")
         create_document(title="Java Guide", content="Java fundamentals")
-        
+
         results = Document.keyword_search("Python")
         assert results.count() >= 1
 
@@ -45,8 +44,8 @@ class TestChatHistoryModel:
             user="test_user",
             messages=[
                 {"role": "user", "content": "Hello"},
-                {"role": "assistant", "content": "Hi!"}
-            ]
+                {"role": "assistant", "content": "Hi!"},
+            ],
         )
         assert chat.id is not None
         assert chat.user == "test_user"
@@ -65,9 +64,7 @@ class TestToolLogModel:
     def test_create_tool_log(self):
         """Test creating tool log."""
         log = ToolLog.objects.create(
-            tool_name="vector_search",
-            input_data={"query": "test"},
-            output_data={"results": []}
+            tool_name="vector_search", input_data={"query": "test"}, output_data={"results": []}
         )
         assert log.id is not None
         assert log.tool_name == "vector_search"
@@ -75,9 +72,5 @@ class TestToolLogModel:
 
     def test_tool_log_str(self):
         """Test tool log string representation."""
-        log = ToolLog.objects.create(
-            tool_name="test_tool",
-            input_data={},
-            output_data={}
-        )
+        log = ToolLog.objects.create(tool_name="test_tool", input_data={}, output_data={})
         assert "test_tool" in str(log)

@@ -7,37 +7,36 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ChatHistory',
+            name="ChatHistory",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('user', models.CharField(blank=True, max_length=255, null=True)),
-                ('messages', models.JSONField(default=list)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("user", models.CharField(blank=True, max_length=255, null=True)),
+                ("messages", models.JSONField(default=list)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'verbose_name_plural': 'Chat histories',
-                'db_table': 'chat_history',
-                'ordering': ['-created_at'],
+                "verbose_name_plural": "Chat histories",
+                "db_table": "chat_history",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='ToolLog',
+            name="ToolLog",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('tool_name', models.CharField(max_length=100)),
-                ('input_data', models.JSONField()),
-                ('output_data', models.JSONField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("tool_name", models.CharField(max_length=100)),
+                ("input_data", models.JSONField()),
+                ("output_data", models.JSONField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'db_table': 'tool_logs',
-                'ordering': ['-created_at'],
+                "db_table": "tool_logs",
+                "ordering": ["-created_at"],
             },
         ),
     ]

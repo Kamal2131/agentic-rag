@@ -49,20 +49,20 @@ User: "What are the latest AI trends?"
 }}
 """
 
+
 def get_system_prompt(tool_registry):
     """
     Generate the system prompt with tool descriptions.
-    
+
     Args:
         tool_registry: ToolRegistry instance
-        
+
     Returns:
         str: Formatted system prompt
     """
     tool_descriptions = tool_registry.get_tool_descriptions()
-    tool_desc_text = "\n".join([
-        f"- {name}: {meta['description']}"
-        for name, meta in tool_descriptions.items()
-    ])
-    
+    tool_desc_text = "\n".join(
+        [f"- {name}: {meta['description']}" for name, meta in tool_descriptions.items()]
+    )
+
     return AGENT_SYSTEM_PROMPT.format(tool_descriptions=tool_desc_text)

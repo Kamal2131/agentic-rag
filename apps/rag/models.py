@@ -1,7 +1,4 @@
-import uuid
 from django.db import models
-from django.contrib.postgres.search import TrigramSimilarity
-
 
 # class Document(models.Model):
 #     """
@@ -30,16 +27,16 @@ from django.contrib.postgres.search import TrigramSimilarity
 #     def keyword_search(cls, query, top_k=10):
 #         """
 #         Perform keyword-based search using PostgreSQL trigram similarity.
-#         
+#
 #         Args:
 #             query: Search query string
 #             top_k: Number of results to return
-#             
+#
 #         Returns:
 #             QuerySet of Documents ordered by relevance
 #         """
 #         return cls.objects.annotate(
-#             similarity=TrigramSimilarity('content', query) + 
+#             similarity=TrigramSimilarity('content', query) +
 #                       TrigramSimilarity('title', query)
 #         ).filter(similarity__gt=0.1).order_by('-similarity')[:top_k]
 
@@ -48,6 +45,7 @@ class ChatHistory(models.Model):
     """
     Chat history model to store conversation history.
     """
+
     id = models.AutoField(primary_key=True)
     user = models.CharField(max_length=255, blank=True, null=True)
     messages = models.JSONField(default=list)
@@ -55,9 +53,9 @@ class ChatHistory(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'chat_history'
-        ordering = ['-created_at']
-        verbose_name_plural = 'Chat histories'
+        db_table = "chat_history"
+        ordering = ["-created_at"]
+        verbose_name_plural = "Chat histories"
 
     def __str__(self):
         return f"Chat {self.id} - {self.user or 'Anonymous'}"
@@ -67,6 +65,7 @@ class ToolLog(models.Model):
     """
     Log of tool executions by the agent.
     """
+
     id = models.AutoField(primary_key=True)
     tool_name = models.CharField(max_length=100)
     input_data = models.JSONField()
@@ -74,9 +73,8 @@ class ToolLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'tool_logs'
-        ordering = ['-created_at']
+        db_table = "tool_logs"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.tool_name} - {self.created_at}"
-
