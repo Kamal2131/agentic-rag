@@ -59,7 +59,7 @@ class EmbeddingService:
                 # This is a placeholder implementation
                 raise NotImplementedError("Groq embedding not yet supported")
         except Exception as e:
-            raise Exception(f"Failed to generate embedding: {str(e)}")
+            raise Exception(f"Failed to generate embedding: {str(e)}") from e
 
     def embed_batch(self, texts):
         """
@@ -81,4 +81,4 @@ class EmbeddingService:
             elif self.provider == "groq":
                 raise NotImplementedError("Groq embedding not yet supported")
         except Exception as e:
-            raise Exception(f"Failed to generate embeddings: {str(e)}")
+            raise Exception(f"Failed to generate embeddings: {str(e)}") from e

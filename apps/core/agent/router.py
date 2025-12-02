@@ -26,14 +26,14 @@ class Router:
         Returns:
             str: 'local', 'web', or 'both'
         """
-        system_prompt = """You are a router for a RAG system. 
+        system_prompt = """You are a router for a RAG system.
         Your job is to decide where to look for information to answer the user's query.
-        
+
         Available sources:
         1. "local": Use this if the query relates to the provided summary of the local document.
         2. "web": Use this if the query requires up-to-date information, news, or general knowledge not covered by the local document.
         3. "both": Use this if the query might need both local context and external information.
-        
+
         Output JSON format: {"source": "local" | "web" | "both"}
         """
 

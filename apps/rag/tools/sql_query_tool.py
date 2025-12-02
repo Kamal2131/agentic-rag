@@ -38,7 +38,7 @@ def sql_query_tool(query):
             columns = [col[0] for col in cursor.description]
             results = []
             for row in cursor.fetchall():
-                results.append(dict(zip(columns, row)))
+                results.append(dict(zip(columns, row, strict=True)))
 
         return {"success": True, "results": results, "count": len(results)}
     except Exception as e:

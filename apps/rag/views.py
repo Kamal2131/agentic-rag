@@ -158,7 +158,7 @@ class ToolsViewSet(viewsets.ViewSet):
         tool_descriptions = registry.get_tool_descriptions()
 
         tools = []
-        for name, metadata in tool_descriptions.items():
+        for _name, metadata in tool_descriptions.items():
             tools.append(metadata)
 
         serializer = ToolMetadataSerializer(tools, many=True)

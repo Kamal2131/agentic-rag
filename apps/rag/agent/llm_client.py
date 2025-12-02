@@ -75,7 +75,7 @@ class LLMClient:
             return parsed
 
         except Exception as e:
-            raise Exception(f"LLM planning failed: {str(e)}")
+            raise Exception(f"LLM planning failed: {str(e)}") from e
 
     def _parse_response(self, content):
         """
@@ -111,7 +111,7 @@ class LLMClient:
                 if start != -1 and end > start:
                     json_str = content[start:end]
                     return json.loads(json_str)
-            except:
+            except (json.JSONDecodeError, ValueError, KeyError):
                 pass
 
             # Return error format

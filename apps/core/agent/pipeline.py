@@ -56,8 +56,8 @@ class RAGPipeline:
         steps.append({"step": "context_building", "length": len(context_text)})
 
         # Step 4: Generation
-        system_prompt = """You are a helpful assistant. 
-        Answer the user's query using the provided context. 
+        system_prompt = """You are a helpful assistant.
+        Answer the user's query using the provided context.
         If the context doesn't contain the answer, say so, but try to be helpful.
         """
 

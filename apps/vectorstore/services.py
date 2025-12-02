@@ -52,7 +52,7 @@ class QdrantService:
             self.client.upsert(collection_name=self.COLLECTION_NAME, points=[point])
             return True
         except Exception as e:
-            raise Exception(f"Failed to upsert vector: {str(e)}")
+            raise Exception(f"Failed to upsert vector: {str(e)}") from e
 
     def upsert_batch(self, points):
         """
@@ -73,7 +73,7 @@ class QdrantService:
             self.client.upsert(collection_name=self.COLLECTION_NAME, points=batch_points)
             return True
         except Exception as e:
-            raise Exception(f"Failed to batch upsert vectors: {str(e)}")
+            raise Exception(f"Failed to batch upsert vectors: {str(e)}") from e
 
     def search_vectors(self, query_embedding, top_k=5, filters=None):
         """
@@ -101,7 +101,7 @@ class QdrantService:
 
             return results
         except Exception as e:
-            raise Exception(f"Vector search failed: {str(e)}")
+            raise Exception(f"Vector search failed: {str(e)}") from e
 
     def delete_vector(self, document_id):
         """
@@ -115,4 +115,4 @@ class QdrantService:
                 collection_name=self.COLLECTION_NAME, points_selector=[str(document_id)]
             )
         except Exception as e:
-            raise Exception(f"Failed to delete vector: {str(e)}")
+            raise Exception(f"Failed to delete vector: {str(e)}") from e

@@ -61,7 +61,7 @@ class DocumentService:
 
         # 5. Prepare batch for Qdrant
         points = []
-        for i, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
+        for i, (chunk, embedding) in enumerate(zip(chunks, embeddings, strict=True)):
             chunk_id = uuid.uuid4()
             points.append(
                 {

@@ -2,29 +2,26 @@
 Verification script for PDF ingestion.
 """
 
+import io
 import os
 
 import django
+import pypdf
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 # Setup Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
-from django.core.files.uploadedfile import SimpleUploadedFile
-
-from apps.knowledgebase.models import Document
-from apps.vectorstore.services import QdrantService
+from apps.knowledgebase.models import Document  # noqa: E402
+from apps.vectorstore.services import QdrantService  # noqa: E402
 
 
 def create_dummy_pdf():
     """Create a dummy PDF file for testing."""
-    import io
-
-    import pypdf
-
     buffer = io.BytesIO()
     writer = pypdf.PdfWriter()
-    page = writer.add_blank_page(width=72, height=72)
+    writer.add_blank_page(width=72, height=72)
 
     # Add some text (simulated, as pypdf writing text is complex)
     # For this test, we'll rely on the fact that we can upload it,

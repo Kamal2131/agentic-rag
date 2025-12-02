@@ -60,4 +60,4 @@ class LLMClient:
             return response.choices[0].message.content
 
         except Exception as e:
-            raise Exception(f"LLM chat failed: {str(e)}")
+            raise Exception(f"LLM chat failed: {str(e)}") from e
