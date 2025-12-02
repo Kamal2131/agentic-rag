@@ -28,6 +28,11 @@ services:
       - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: timeout 10 bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 5
 
   # Redis for Django Channels
   redis:
@@ -35,6 +40,11 @@ services:
     container_name: agentic_rag_redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # Django application
   web:
@@ -64,9 +74,15 @@ services:
       db:
         condition: service_healthy
       qdrant:
-        condition: service_started
+        condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     stdin_open: true
     tty: true
 
