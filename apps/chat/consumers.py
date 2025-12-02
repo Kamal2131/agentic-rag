@@ -52,8 +52,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # Note: AgentExecutor initializes everything internally
             agent = AgentExecutor()
             
+            # Fetch history
+            chat_history = await self.get_chat_history(user_id)
+            
             # Execute agent logic (sync code needs to be wrapped)
-            response = await sync_to_async(agent.run)(message)
+            response = await sync_to_async(agent.run)(message, chat_history=chat_history)
             
             # Save chat history
             await self.save_chat_history(user_id, message, response)
@@ -84,3 +87,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 {"role": "assistant", "content": response.get('answer')}
             ]
         )
+
+    @sync_to_async
+    def get_chat_history(self, user_id):
+        """Fetch recent chat history with this endpoint."""
+        history_objs = ChatHistory.objects.filter(user=user_id).order_by('-created_at')[:5]
+        chat_history = []
+        for h in reversed(history_objs):
+            if isinstance(h.messages, list):
+                chat_history.extend(h.messages)
+        return chat_history
