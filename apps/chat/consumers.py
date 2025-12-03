@@ -3,7 +3,7 @@ import json
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from apps.rag.agent.executor import AgentExecutor
+from apps.core.agent.pipeline import RAGPipeline
 from apps.rag.models import ChatHistory
 
 
@@ -42,21 +42,40 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if not message:
                 return
 
-            # Send user message back to confirm receipt (optional)
+            # Send user message back to confirm receipt
             await self.send(text_data=json.dumps({"type": "user_message", "message": message}))
 
-            # Initialize Agent components
-            # Note: AgentExecutor initializes everything internally
-            agent = AgentExecutor()
+            # Use RAG Pipeline instead of AgentExecutor for simpler, more reliable responses
+            pipeline = RAGPipeline()
 
-            # Fetch history
-            chat_history = await self.get_chat_history(user_id)
+            # Execute RAG pipeline (sync code needs to be wrapped)
+            response = await sync_to_async(pipeline.run)(message)
 
-            # Execute agent logic (sync code needs to be wrapped)
-            response = await sync_to_async(agent.run)(message, chat_history=chat_history)
+            # Format sources for response
+            sources = []
+            if response.get("source") == "web":
+                # Web search was used - extract from serper results
+                sources.append({
+                    "type": "web",
+                    "title": "Internet Search",
+                })
+            elif response.get("source") == "local":
+                sources.append({
+                    "type": "local",
+                    "title": "Knowledge Base",
+                })
+            elif response.get("source") == "both":
+                sources.append({
+                    "type": "local",
+                    "title": "Knowledge Base",
+                })
+                sources.append({
+                    "type": "web",
+                    "title": "Internet Search",
+                })
 
             # Save chat history
-            await self.save_chat_history(user_id, message, response)
+            await self.save_chat_history(user_id, message, response.get("answer"))
 
             # Send agent response
             await self.send(
@@ -64,8 +83,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     {
                         "type": "agent_response",
                         "message": response.get("answer"),
-                        "sources": response.get("sources", []),
-                        "steps": response.get("steps_taken", []),
+                        "sources": sources,
+                        "steps": response.get("steps", []),
                     }
                 )
             )
@@ -76,19 +95,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def save_chat_history(self, user_id, query, response):
         """Save chat interaction to database."""
-        # This is a simplified history saving.
-        # In a real app, you might append to an existing conversation.
         ChatHistory.objects.create(
             user=user_id,
             messages=[
                 {"role": "user", "content": query},
-                {"role": "assistant", "content": response.get("answer")},
+                {"role": "assistant", "content": response},
             ],
         )
 
     @sync_to_async
     def get_chat_history(self, user_id):
-        """Fetch recent chat history with this endpoint."""
+        """Fetch recent chat history."""
         history_objs = ChatHistory.objects.filter(user=user_id).order_by("-created_at")[:5]
         chat_history = []
         for h in reversed(history_objs):

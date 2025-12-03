@@ -185,3 +185,6 @@ QDRANT_CONFIG = {
     "HOST": config("QDRANT_HOST", default="qdrant"),
     "PORT": config("QDRANT_PORT", default=6333, cast=int),
 }
+
+# Serper API settings (for web search)
+SERPER_API_KEY = config("SERPER_API_KEY", default="")
