@@ -6,16 +6,52 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "${{ github.actor }}"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    # Automatically merge minor and patch updates
+    versioning-strategy: increase
+    # Group updates to reduce PR count
+    groups:
+      production-dependencies:
+        patterns:
+          - "django*"
+          - "fastapi*"
+          - "uvicorn*"
+          - "psycopg*"
+          - "redis*"
+          - "celery*"
+          - "channels*"
+        update-types:
+          - "minor"
+          - "patch"
+      ai-ml-dependencies:
+        patterns:
+          - "openai*"
+          - "langchain*"
+          - "transformers*"
+          - "torch*"
+          - "numpy*"
+          - "pandas*"
+        update-types:
+          - "minor"
+          - "patch"
+      testing-dependencies:
+        patterns:
+          - "pytest*"
+          - "coverage*"
+          - "faker*"
+          - "factory-boy*"
+        update-types:
+          - "minor"
+          - "patch"
     labels:
       - "dependencies"
       - "python"
     commit-message:
-      prefix: "chore"
-      prefix-development: "chore"
+      prefix: "chore(deps)"
       include: "scope"
+    rebase-strategy: "auto"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -23,11 +59,15 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
       - "github-actions"
     commit-message:
-      prefix: "ci"
+      prefix: "ci(deps)"
+    rebase-strategy: "auto"
 
   # Docker
   - package-ecosystem: "docker"
@@ -35,8 +75,12 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
       - "docker"
     commit-message:
-      prefix: "chore"
+      prefix: "chore(deps)"
+    rebase-strategy: "auto"
