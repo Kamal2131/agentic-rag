@@ -16,10 +16,10 @@ def web_search_tool(query):
         dict: Search results with organic results from Google
     """
     serper = SerperDevTool()
-    
+
     try:
         results = serper.search(query)
-        
+
         # Handle error response
         if "error" in results:
             return {
@@ -28,10 +28,10 @@ def web_search_tool(query):
                 "count": 0,
                 "message": f"Web search error: {results['error']}",
             }
-        
+
         # Extract organic results
         organic_results = results.get("organic", [])
-        
+
         # Format results for the RAG pipeline
         formatted_results = [
             {
@@ -41,14 +41,14 @@ def web_search_tool(query):
             }
             for result in organic_results[:5]  # Limit to top 5 results
         ]
-        
+
         return {
             "success": True,
             "results": formatted_results,
             "count": len(formatted_results),
             "message": "Web search completed successfully",
         }
-        
+
     except Exception as e:
         return {
             "success": False,
