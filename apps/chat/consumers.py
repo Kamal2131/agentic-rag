@@ -55,24 +55,32 @@ class ChatConsumer(AsyncWebsocketConsumer):
             sources = []
             if response.get("source") == "web":
                 # Web search was used - extract from serper results
-                sources.append({
-                    "type": "web",
-                    "title": "Internet Search",
-                })
+                sources.append(
+                    {
+                        "type": "web",
+                        "title": "Internet Search",
+                    }
+                )
             elif response.get("source") == "local":
-                sources.append({
-                    "type": "local",
-                    "title": "Knowledge Base",
-                })
+                sources.append(
+                    {
+                        "type": "local",
+                        "title": "Knowledge Base",
+                    }
+                )
             elif response.get("source") == "both":
-                sources.append({
-                    "type": "local",
-                    "title": "Knowledge Base",
-                })
-                sources.append({
-                    "type": "web",
-                    "title": "Internet Search",
-                })
+                sources.append(
+                    {
+                        "type": "local",
+                        "title": "Knowledge Base",
+                    }
+                )
+                sources.append(
+                    {
+                        "type": "web",
+                        "title": "Internet Search",
+                    }
+                )
 
             # Save chat history
             await self.save_chat_history(user_id, message, response.get("answer"))
