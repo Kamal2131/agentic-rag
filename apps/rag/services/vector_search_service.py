@@ -37,21 +37,55 @@ class VectorSearchService:
             query_embedding=query_embedding, top_k=top_k, filters=filters
         )
 
-        # Fetch full document data from database
+        # Process results - chunks have document_id in payload
         results = []
+        seen_docs = set()  # Avoid duplicates
+        
         for hit in qdrant_results:
             try:
-                doc = Document.objects.get(id=hit["id"])
-                results.append(
-                    {
-                        "id": str(doc.id),
-                        "title": doc.title,
-                        "content": doc.content,
-                        "metadata": doc.metadata,
-                        "score": hit["score"],
-                    }
-                )
-            except Document.DoesNotExist:
+                payload = hit.get("payload", {})
+                
+                # Get document_id from payload (chunks store parent document ID)
+                document_id = payload.get("document_id")
+                
+                if not document_id:
+                    # If no document_id, this might be a direct document vector
+                    # Try using the hit ID itself
+                    document_id = hit["id"]
+                
+                # Skip if we've already added this document
+                if document_id in seen_docs:
+                    continue
+                    
+                # Try to fetch the document
+                try:
+                    doc = Document.objects.get(id=document_id)
+                    results.append(
+                        {
+                            "id": str(doc.id),
+                            "title": doc.title,
+                            "content": payload.get("content", doc.content),  # Use chunk content if available
+                            "chunk_content": payload.get("content"),  # Include chunk for context
+                            "metadata": doc.metadata,
+                            "score": hit["score"],
+                        }
+                    )
+                    seen_docs.add(document_id)
+                except Document.DoesNotExist:
+                    # Document not found, return chunk info only
+                    results.append(
+                        {
+                            "id": str(hit["id"]),
+                            "title": payload.get("title", "Unknown"),
+                            "content": payload.get("content", ""),
+                            "chunk_content": payload.get("content"),
+                            "metadata": payload,
+                            "score": hit["score"],
+                        }
+                    )
+            except Exception as e:
+                # Log error but continue processing other results
+                print(f"Error processing search result: {e}")
                 continue
 
         return results
