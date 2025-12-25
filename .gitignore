@@ -33,5 +33,16 @@ Thumbs.db
 # Docker
 postgres_data/
 
-
+# Unused and AWS configs
 unused/
+aws/
+
+# Cache
+.ruff_cache/
+.ruff_cache
+.pytest_cache/
+
+# Raw data (PDFs and large files)
+raw_data/
+raw_data*/
+
