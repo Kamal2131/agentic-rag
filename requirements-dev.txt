@@ -12,7 +12,7 @@ flake8>=6.1.0
 
 # Security Scanning
 safety>=2.3.0
-bandit>=1.7.5
+bandit>=1.9.4
 
 # Type Checking
 mypy>=1.0.0
